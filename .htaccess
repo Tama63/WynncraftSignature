@@ -1,0 +1,10 @@
+# Redirect to pretty url
+RewriteEngine On
+RewriteRule ^([a-zA-Z0-9-z\-_]+).png$ index.php?player=$1
+RewriteRule ^([a-zA-Z0-9-z\-_]+).png/$ index.php?player=$1
+RewriteRule ^([a-zA-Z0-9-z\-_]+)$ index.php?player=$1
+RewriteRule ^([a-zA-Z0-9-z\-_]+)/$ index.php?player=$1
+RewriteRule ^([a-zA-Z0-9-z\-_]+)/([a-zA-Z0-9-z\-_]+).png$ index.php?player=$2&theme=$1
+RewriteRule ^([a-zA-Z0-9-z\-_]+)/([a-zA-Z0-9-z\-_]+).png/$ index.php?player=$2&theme=$1
+RewriteRule ^([a-zA-Z0-9-z\-_]+)/([a-zA-Z0-9-z\-_]+)$ index.php?player=$2&theme=$1
+RewriteRule ^([a-zA-Z0-9-z\-_]+)/([a-zA-Z0-9-z\-_]+)/$ index.php?player=$2&theme=$1
