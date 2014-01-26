@@ -52,6 +52,7 @@ if($playerdata == "false") die("Player not logged in Wynncraft stats"); // Has t
 $playerdata = explode(",", $playerdata);
 	
 /* Array Doc
+-Adding &json outputs json instead of csv
 0 : rank  0 - normal, 1 - donator, 2 - moderator, 3 - admin
 1 : diff in from now since log in, represeneted in months and days
 2 : play time, how many many hours have they played for rounded to 2 d.p.
