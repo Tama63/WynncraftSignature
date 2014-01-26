@@ -1,12 +1,10 @@
 <?php
-/* 
-	Wynncraft Signature Generator 
-
-	Copyright Wynncraft 2013
-	@author Chris Ireland <ireland63@gmail.com>
-
-	@file Functions
-*/
+/**
+ * Wynncraft Signature
+ *
+ * @copyright Wynncraft 2013
+ * @author Chris Ireland <ireland63@gmail.com>
+ */
 
 // Simple Sanitizier
 function protectInput($protectinput){

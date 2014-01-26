@@ -1,12 +1,10 @@
 <?php
-/* 
-	Wynncraft Signature Generator 
-
-	@author Chris Ireland <ireland63@gmail.com>
-
-	@file Main
-	@dependencies openssl, gd
-*/
+/**
+ * Wynncraft Signature
+ *
+ * @copyright Wynncraft 2013
+ * @author Chris Ireland <ireland63@gmail.com>
+ */
 
 /* Include Basic Functions */
 include("functions.php");
@@ -49,11 +47,12 @@ switch ($theme) {
 }
 
 /* Turn from string into array */
-$playerdata = file_get_contents("http://wynncraft.com/api/playerapi.php?player=$player");
+$playerdata = file_get_contents("http://wynncraft.com/api/public_api.php?type=player&player=$player");
 if($playerdata == "false") die("Player not logged in Wynncraft stats"); // Has the player actually been on Wynncraft?
 $playerdata = explode(",", $playerdata);
 	
 /* Array Doc
+-Adding &json outputs json instead of csv
 0 : rank  0 - normal, 1 - donator, 2 - moderator, 3 - admin
 1 : diff in from now since log in, represeneted in months and days
 2 : play time, how many many hours have they played for rounded to 2 d.p.
