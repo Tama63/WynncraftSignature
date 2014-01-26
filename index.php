@@ -1,12 +1,10 @@
 <?php
-/* 
-	Wynncraft Signature Generator 
-
-	@author Chris Ireland <ireland63@gmail.com>
-
-	@file Main
-	@dependencies openssl, gd
-*/
+/**
+ * Wynncraft Signature
+ *
+ * @copyright Wynncraft 2013
+ * @author Chris Ireland <ireland63@gmail.com>
+ */
 
 /* Include Basic Functions */
 include("functions.php");
