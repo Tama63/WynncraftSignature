@@ -47,7 +47,7 @@ switch ($theme) {
 }
 
 /* Turn from string into array */
-$playerdata = file_get_contents("http://wynncraft.com/api/playerapi.php?player=$player");
+$playerdata = file_get_contents("http://wynncraft.com/api/public_api.php?type=player&player=$player");
 if($playerdata == "false") die("Player not logged in Wynncraft stats"); // Has the player actually been on Wynncraft?
 $playerdata = explode(",", $playerdata);
 	
