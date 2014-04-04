@@ -4,9 +4,14 @@
  *
  * @copyright Wynncraft 2013
  * @author Chris Ireland <ireland63@gmail.com>
+ * @license MIT <http://opensource.org/licenses/MIT>
  */
 
-// Simple Sanitizier
+/**
+ * Clean a string
+ * @param $protectinput
+ * @return mixed|string
+ */
 function protectInput($protectinput){
 	$protectinput = stripslashes($protectinput);
 	$protectinput = str_replace(array("<", ">", "!", "?", "(", ")"), "", $protectinput);
@@ -14,7 +19,11 @@ function protectInput($protectinput){
 	return $protectinput;
 }
 
-// Tidy num
+/**
+ * Format a number as a human-readable string
+ * @param $numrev
+ * @return float|string
+ */
 function convertNum($numrev) {
 	if($numrev >= 1000 && $numrev < 1000000) {
 		$num = $numrev /1000;
