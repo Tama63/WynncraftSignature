@@ -28,11 +28,11 @@ function convertNum($numrev) {
 	if($numrev >= 1000 && $numrev < 1000000) {
 		$num = $numrev /1000;
 		$num = number_format((float)$num, 1, ".", "");
-		$num = $num."k";
+		$num = $num . 'k';
 	} elseif($numrev >= 1000000) {
 		$num = $numrev /1000000;
 		$num = number_format((float)$num, 1, ".", "");
-		$num = $num."m";
+		$num = $num . 'm';
 	} else {
 		$num = $numrev;
 	}
