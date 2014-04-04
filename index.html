@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wynncraft Signature Generator</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="container well">
+    <h2>Options</h2>
+
+    <form>
+        <h4><i class="glyphicon glyphicon-user"></i> Minecraft Username</h4>
+        <div class="input-group">
+            <span class="input-group-addon">Minecraft Username</span>
+            <input id="inputUsername" type="text" class="form-control" placeholder="Steve">
+        </div>
+
+        <br/>
+        <h4><i class="glyphicon glyphicon-picture"></i> Background Selector</h4>
+        <select id="themeInput" class="form-control">
+            <option value="0">Sea</option>
+            <option value="0">Dirt</option>
+            <option value="2">Sky</option>
+            <option value="3">Stone</option>
+            <option value="4">Tower</option>
+            <option value="5">Hills</option>
+            <option value="6">Wall</option>
+            <option value="7">Board</option>
+        </select>
+    </form>
+
+    <h2>Resultant Signature</h2>
+    <div id="result-img"></div>
+    <br/>
+    <input id="result" class="form-control" placeholder="Awaiting Generation" disabled />
+
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script>
+    // Signature Generator Functionality
+    function updateGenerator() {
+        var username = $('#inputUsername').val(),
+                theme = $('#themeInput').val();
+
+        console.log(username);
+
+        if(username) {
+            $('#result-img').html('<img src="http://tama63.co.uk/wynn/' + theme + '/' + username + '.png" alt="Generated Signature" />');
+            $('#result').removeAttr('disabled').val('http://tama63.co.uk/wynn/' + theme + '/' + username + '.png')
+        }
+    }
+
+    // Wait for input change
+    $(document).ready(function() {
+        $('#inputUsername').change(function() {
+            updateGenerator()
+        });
+        $('#themeInput').change(function() {
+            updateGenerator()
+        });
+    });
+
+</script>
+</body>
+</html>
