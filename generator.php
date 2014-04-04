@@ -13,7 +13,7 @@ include('functions.php');
 // Check input else exit
 $player = protectInput($_GET['player']);
 if (empty($_GET['player']) || (file_get_contents('https://minecraft.net/haspaid.jsp?user=' . $player) != 'true'))
-    die('Player Invalid');
+    die('Error: Player is not premium');
 
 // Themes
 $theme = protectInput($_GET['theme']);
@@ -49,7 +49,7 @@ $img = imagecreatefrompng($theme);
 // Get player data from the api and decode it
 $playerData = @file_get_contents('http://wynncraft.com/api/public_api.php?type=player&json&player=' . $player);
 if (!$playerData)
-    die('Player not logged in Wynncraft stats');
+    die('Error: Player not logged in Wynncraft stats');
 
 $playerData = json_decode($playerData, true);
 
