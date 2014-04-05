@@ -58,8 +58,6 @@
         var username = $('#inputUsername').val(),
                 theme = $('#themeInput').val();
 
-        console.log(username);
-
         if(username) {
             $('#result-img').html('<img src="http://media.wynncraft.com/signature/' + theme + '/' + username + '.png" alt="Generated Signature" />');
             $('#result').removeAttr('disabled').val('http://media.wynncraft.com/signature/' + theme + '/' + username + '.png')
@@ -67,7 +65,7 @@
     }
 
     // Wait for input change
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#inputUsername').change(function() {
             updateGenerator()
         });

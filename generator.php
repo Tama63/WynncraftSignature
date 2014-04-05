@@ -18,28 +18,28 @@ if (empty($_GET['player']) || (file_get_contents('https://minecraft.net/haspaid.
 // Themes
 $theme = protectInput($_GET['theme']);
 switch ($theme) {
-	case 1:
+    case 1:
         $theme = 'img/sea.png';
         break;
-	case 2:
+    case 2:
         $theme = 'img/sky.png';
         break;
-	case 3:
+    case 3:
         $theme = 'img/stone.png';
         break;
-	case 4:
+    case 4:
         $theme = 'img/tower.png';
         break;
-	case 5:
+    case 5:
         $theme = 'img/intro.png';
         break;
-	case 6:
+    case 6:
         $theme = 'img/wall.png';
         break;
-	case 7:
+    case 7:
         $theme = 'img/board.png';
         break;
-	default:
+    default:
         $theme = 'img/dirt.png';
         break;
 }
@@ -47,7 +47,7 @@ switch ($theme) {
 $img = imagecreatefrompng($theme);
 
 // Get player data from the api and decode it
-$playerData = @file_get_contents('http://wynncraft.com/api/public_api.php?type=player&json&player=' . $player);
+$playerData = @file_get_contents('http://wynncraft.com/api/public_api.php?action=playerStats&command=' . $player);
 if (!$playerData)
     die('Error: Player not logged in Wynncraft stats');
 
@@ -66,16 +66,19 @@ imagesetbrush($img, $avatar);
 imageline($img, imagesx($img) / 1.15, imagesy($img) / 1.5, imagesx($img) / 1.15, imagesy($img) / 1.5, IMG_COLOR_BRUSHED);
 
 // Prepare rank colour formatting
-switch ($playerData['rank']){
+switch ($playerData['rank']) {
     case 'VIP':
         $colorRank = imagecolorallocate($img, 0, 170, 0);
-		break;
+        break;
     case 'Moderator':
         $colorRank = imagecolorallocate($img, 255, 170, 0);
-		break;
+        break;
     case 'Administrator':
         $colorRank = imagecolorallocate($img, 170, 0, 0);
-		break;
+        break;
+    case 'Media':
+        $colorRank = imagecolorallocate($img, 170, 0, 170);
+        break;
     default:
         $colorRank = imagecolorallocate($img, 220, 220, 220);
 }
@@ -93,20 +96,20 @@ if (strstr($playerData['current_server'], 'WC')) {
 $mobs = convertNum($playerData['mobs_killed']);
 $players = convertNum($playerData['pvp_kills']);
 
-if($mobs == 1) {
+if ($mobs == 1) {
     $mobsLocale = 'mob';
 } else {
     $mobsLocale = 'mobs';
 }
 
-if($players == 1) {
+if ($players == 1) {
     $playersLocale = 'player';
 } else {
     $playersLocale = 'players';
 }
 
 // Handle playtime plural
-if($playerData['playtime'] == 1) {
+if ($playerData['playtime'] == 1) {
     $playtimeLocale = 'hour';
 } else {
     $playtimeLocale = 'hours';
