@@ -93,8 +93,8 @@ if (strstr($playerData['current_server'], 'WC')) {
 }
 
 // Handle kills
-$mobs = convertNum($playerData['mobs_killed']);
-$players = convertNum($playerData['pvp_kills']);
+$mobs = convertNum($playerData['global']['mobs_killed']);
+$players = convertNum($playerData['global']['pvp_kills']);
 
 if ($mobs == 1) {
     $mobsLocale = 'mob';
@@ -129,7 +129,7 @@ imagettftext($img, 10, 0, 15, 50, $color, $font, 'Playtime:');
 imagettftext($img, 10, 0, 85, 50, $colorAlt, $fontAlt, $playerData['playtime'] . ' ' . $playtimeLocale);
 
 imagettftext($img, 10, 0, 15, 63, $color, $font, 'Total Level:');
-imagettftext($img, 10, 0, 100, 63, $colorAlt, $fontAlt, $playerData['total_level']);
+imagettftext($img, 10, 0, 100, 63, $colorAlt, $fontAlt, $playerData['global']['total_level']);
 
 imagettftext($img, 10, 0, 15, 76, $color, $font, 'Killed:');
 imagettftext($img, 10, 0, 65, 76, $colorAlt, $fontAlt, $mobs . ' ' . $mobsLocale . ' & ' . $players . ' ' . $playersLocale);
