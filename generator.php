@@ -47,7 +47,7 @@ switch ($theme) {
 $img = imagecreatefrompng($theme);
 
 // Get player data from the api and decode it
-$playerData = @file_get_contents('http://api.wynncraft.com/public_api.php?action=playerStats&command=' . $player);
+$playerData = @file_get_contents('https://api.wynncraft.com/public_api.php?action=playerStats&command=' . $player);
 if (!$playerData)
     die('Error: Player not logged in Wynncraft stats');
 
