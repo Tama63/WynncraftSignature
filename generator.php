@@ -147,9 +147,9 @@ if ($playerData->playtime == 1) {
 }
 
 // Font Variables
-$font = 'DroidSans-Bold.ttf';
+$font = dirname(__FILE__) . 'DroidSans-Bold.ttf';
 $color = imagecolorallocate($img, 250, 250, 250);
-$fontAlt = 'DroidSans.ttf';
+$fontAlt = dirname(__FILE__) . 'DroidSans.ttf';
 $colorAlt = imagecolorallocate($img, 10, 10, 10);
 
 // Echo Messages
