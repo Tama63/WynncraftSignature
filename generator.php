@@ -14,16 +14,16 @@ include('functions.php');
 $player = protectInput($_GET['player']);
 
 // Check if the user is premium
-$ch = curl_init(); 
-curl_setopt($ch, CURLOPT_URL, "https://api.mojang.com/users/profiles/minecraft/" . $player); 
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 0); 
-curl_exec($ch); 
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://api.mojang.com/users/profiles/minecraft/" . $player);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_exec($ch);
 
 if (empty($_GET['player']) || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
     die('Error: Player is not premium');
 
 // Themes
-$theme = protectInput($_GET['theme']);
+$theme = protectInput(isset($_GET['theme']) ? $_GET['theme'] : 0);
 switch ($theme) {
     case 1:
         $theme = 'img/sea.png';
@@ -46,6 +46,7 @@ switch ($theme) {
     case 7:
         $theme = 'img/board.png';
         break;
+    case 0:
     default:
         $theme = 'img/dirt.png';
         break;
@@ -54,16 +55,25 @@ switch ($theme) {
 $img = imagecreatefrompng($theme);
 
 // Get player data from the api and decode it
-$playerData = @file_get_contents('https://api.wynncraft.com/public_api.php?action=playerStats&command=' . $player);
-if (!$playerData)
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://api.wynncraft.com/public_api.php?action=playerStats&command=" . $player);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$playerData = curl_exec($ch);
+$playerData = json_decode($playerData);
+
+if (isset($playerData->{'error'}))
     die('Error: Player not logged in Wynncraft stats');
 
 $playerData = json_decode($playerData, true);
 
 // Handle no skin
 $playerSkin = $player;
-$check = @file_get_contents('http://skins.minecraft.net/MinecraftSkins/' . $player . '.png');
-if ($check == '') $playerSkin = 'char';
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "http://skins.minecraft.net/MinecraftSkins/" . $player . ".png");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 404) {
+    $playerSkin = 'char';
+}
 
 // Get avatar and merge it with the background
 $avatar = file_get_contents('https://minotar.net/bust/' . $playerSkin . '/100.png');
@@ -145,10 +155,11 @@ imagettftext($img, 10, 0, 15, 89, $color, $font, 'Status:');
 imagettftext($img, 10, 0, 70, 89, $colorStatus, $fontAlt, $currentServer);
 
 // Render
+/*
 header('Content-type: image/png');
 header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
 header('Expires: Thu, 19 Nov 1981 08:52:00 GMT');
-header('Pragma: no-cache');
+header('Pragma: no-cache');*/
 
 imagepng($img) or die('Imaged failed to load');
 imagedestroy($img);
