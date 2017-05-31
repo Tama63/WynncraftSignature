@@ -59,7 +59,7 @@
                 theme = $('#themeInput').val();
 
         if(username) {
-            $('#result-img').html('<img src="http://174.138.50.81/wynn/generator.php?theme=' + theme + '&player=' + username" alt="Generated Signature" />');
+            $('#result-img').html('<img src="http://174.138.50.81/wynn/generator.php?theme=' + theme + '&player=' + username +'" alt="Generated Signature" />');
             $('#result').removeAttr('disabled').val('http://174.138.50.81/wynn/generator.php?theme=' + theme + '&player=' + username)
         }
     }
