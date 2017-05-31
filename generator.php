@@ -1,79 +1,181 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Wynncraft Signature Generator</title>
+<?php
+/**
+ * Wynncraft Signature
+ *
+ * @copyright Wynncraft 2013
+ * @author Chris Ireland <ireland63@gmail.com>
+ * @license MIT <http://opensource.org/licenses/MIT>
+ */
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+// Include Basic Functions
+include('functions.php');
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-<body>
-<div class="container well">
-    <h2>Options</h2>
+// Check input else exit
+$player = protectInput(isset($_GET['player']) ? $_GET['player'] : '');
 
-    <form>
-        <h4><i class="glyphicon glyphicon-user"></i> Minecraft Username</h4>
-        <div class="input-group">
-            <span class="input-group-addon">Minecraft Username</span>
-            <input id="inputUsername" type="text" class="form-control" placeholder="Steve">
-        </div>
+// Check if the user is premium
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://api.mojang.com/users/profiles/minecraft/" . $player);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_exec($ch);
 
-        <br/>
-        <h4><i class="glyphicon glyphicon-picture"></i> Background Selector</h4>
-        <select id="themeInput" class="form-control">
-            <option value="0">Dirt</option>
-            <option value="1">Sea</option>
-            <option value="2">Sky</option>
-            <option value="3">Stone</option>
-            <option value="4">Tower</option>
-            <option value="5">Hills</option>
-            <option value="6">Wall</option>
-            <option value="7">Board</option>
-        </select>
-    </form>
+if (!isset($_GET['player']) || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
+    die('Error: Player is not premium');
 
-    <h2>Resultant Signature</h2>
-    <div id="result-img"></div>
-    <br/>
-    <input id="result" class="form-control" placeholder="Awaiting Generation" disabled />
+// Themes
+$theme = protectInput(isset($_GET['theme']) ? $_GET['theme'] : 0);
+switch ($theme) {
+    case 1:
+        $theme = 'img/sea.png';
+        break;
+    case 2:
+        $theme = 'img/sky.png';
+        break;
+    case 3:
+        $theme = 'img/stone.png';
+        break;
+    case 4:
+        $theme = 'img/tower.png';
+        break;
+    case 5:
+        $theme = 'img/intro.png';
+        break;
+    case 6:
+        $theme = 'img/wall.png';
+        break;
+    case 7:
+        $theme = 'img/board.png';
+        break;
+    case 0:
+    default:
+        $theme = 'img/dirt.png';
+        break;
+}
 
-</div>
+$img = imagecreatefrompng($theme);
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script>
-    // Signature Generator Functionality
-    function updateGenerator() {
-        var username = $('#inputUsername').val(),
-                theme = $('#themeInput').val();
+// Get player data from the api and decode it
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://api.wynncraft.com/public_api.php?action=playerStats&command=" . $player);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$playerData = curl_exec($ch);
+$playerData = json_decode($playerData);
 
-        if(username) {
-            $('#result-img').html('<img src="http://174.138.50.81/wynn/generator.php?theme=' + theme + '&player=' + username" alt="Generated Signature" />');
-            $('#result').removeAttr('disabled').val('http://174.138.50.81/wynn/generator.php?theme=' + theme + '&player=' + username)
-        }
+if (isset($playerData->error))
+    die('Error: Player not logged in Wynncraft stats');
+
+
+// Handle no skin
+$playerSkin = $player;
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "http://skins.minecraft.net/MinecraftSkins/" . $player . ".png");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 404) {
+    $playerSkin = 'char';
+}
+
+// Get avatar and merge it with the background
+$avatar = file_get_contents('https://minotar.net/bust/' . $playerSkin . '/100.png');
+$avatar = imagecreatefromstring($avatar);
+
+imagesetbrush($img, $avatar);
+imageline($img, imagesx($img) / 1.15, imagesy($img) / 1.5, imagesx($img) / 1.15, imagesy($img) / 1.5, IMG_COLOR_BRUSHED);
+
+// Prepare rank colour formatting
+switch ($playerData->rank) {
+    case 'Moderator':
+        $colorRank = imagecolorallocate($img, 255, 170, 0);
+        break;
+    case 'Administrator':
+        $colorRank = imagecolorallocate($img, 170, 0, 0);
+        break;
+    case 'Media':
+        $colorRank = imagecolorallocate($img, 170, 0, 170);
+        break;
+    default:
+        $colorRank = imagecolorallocate($img, 220, 220, 220);
+}
+$rank = $playerData->rank;
+if($playerData->tag != "" ) {
+    $rank = $playerData->tag;
+    switch($playerData->tag){
+        case 'VIP':
+            $colorRank = imagecolorallocate($img, 0, 170, 0);
+            break;
+        case 'VIP+':
+            $colorRank = imagecolorallocate($img, 0, 195, 255);
+            break;
+
     }
+}
 
-    // Wait for input change
-    $(document).ready(function () {
-        $('#inputUsername').change(function() {
-            updateGenerator()
-        });
-        $('#themeInput').change(function() {
-            updateGenerator()
-        });
-    });
+if($playerData->veteran) {
+    $rank = "Veteran";
+    $colorRank = imagecolorallocate($img, 0, 195, 255);
+}
 
-</script>
-</body>
-</html>
+// Handle current server
+if (strstr($playerData->current_server, 'WC')) {
+    $currentServer = 'Playing on Server ' . $playerData->current_server;
+    $colorStatus = imagecolorallocate($img, 0, 170, 0); // Green if online
+} else {
+    $currentServer = 'Offline or in Lobby';
+    $colorStatus = imagecolorallocate($img, 170, 0, 0); // Red if offline
+}
+
+// Handle kills
+$mobs = convertNum($playerData->global->mobs_killed);
+$players = convertNum($playerData->global->pvp_kills);
+
+if ($mobs == 1) {
+    $mobsLocale = 'mob';
+} else {
+    $mobsLocale = 'mobs';
+}
+
+if ($players == 1) {
+    $playersLocale = 'player';
+} else {
+    $playersLocale = 'players';
+}
+
+// Handle playtime plural
+if ($playerData->playtime == 1) {
+    $playtimeLocale = 'hour';
+} else {
+    $playtimeLocale = 'hours';
+}
+
+// Font Variables
+$font = dirname(__FILE__) . '/DroidSans-Bold.ttf';
+$color = imagecolorallocate($img, 250, 250, 250);
+$fontAlt = dirname(__FILE__) . '/DroidSans.ttf';
+$colorAlt = imagecolorallocate($img, 10, 10, 10);
+
+// Echo Messages
+imagettftext($img, 10, 0, 15, 35, $color, $font, 'Rank:');
+imagettftext($img, 10, 0, 65, 35, $colorRank, $fontAlt, $rank);
+
+imagettftext($img, 10, 0, 15, 50, $color, $font, 'Playtime:');
+imagettftext($img, 10, 0, 85, 50, $colorAlt, $fontAlt, $playerData->playtime . ' ' . $playtimeLocale);
+
+imagettftext($img, 10, 0, 15, 63, $color, $font, 'Total Level:');
+imagettftext($img, 10, 0, 100, 63, $colorAlt, $fontAlt, $playerData->global->total_level);
+
+imagettftext($img, 10, 0, 15, 76, $color, $font, 'Killed:');
+imagettftext($img, 10, 0, 65, 76, $colorAlt, $fontAlt, $mobs . ' ' . $mobsLocale . ' & ' . $players . ' ' . $playersLocale);
+
+imagettftext($img, 10, 0, 15, 89, $color, $font, 'Status:');
+imagettftext($img, 10, 0, 70, 89, $colorStatus, $fontAlt, $currentServer);
+
+
+imagettftext($img, 10, 0, 323, 89, $color, $font, $player);
+
+// Render
+header('Content-type: image/png');
+header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+header('Expires: Thu, 19 Nov 1981 08:52:00 GMT');
+header('Pragma: no-cache');
+
+imagepng($img) or die('Imaged failed to load');
+imagedestroy($img);
