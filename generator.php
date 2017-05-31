@@ -155,11 +155,11 @@ imagettftext($img, 10, 0, 15, 89, $color, $font, 'Status:');
 imagettftext($img, 10, 0, 70, 89, $colorStatus, $fontAlt, $currentServer);
 
 // Render
-/*
+
 header('Content-type: image/png');
 header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
 header('Expires: Thu, 19 Nov 1981 08:52:00 GMT');
-header('Pragma: no-cache');*/
+header('Pragma: no-cache');
 
 imagepng($img) or die('Imaged failed to load');
 imagedestroy($img);
