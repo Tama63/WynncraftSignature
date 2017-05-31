@@ -11,7 +11,7 @@
 include('functions.php');
 
 // Check input else exit
-$player = protectInput($_GET['player']);
+$player = protectInput(isset($_GET['player']) ? $_GET['player'] : '');
 
 // Check if the user is premium
 $ch = curl_init();
@@ -19,7 +19,7 @@ curl_setopt($ch, CURLOPT_URL, "https://api.mojang.com/users/profiles/minecraft/"
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_exec($ch);
 
-if (empty($_GET['player']) || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
+if (!isset($_GET['player']) || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
     die('Error: Player is not premium');
 
 // Themes
