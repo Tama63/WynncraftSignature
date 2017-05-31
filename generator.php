@@ -12,7 +12,14 @@ include('functions.php');
 
 // Check input else exit
 $player = protectInput($_GET['player']);
-if (empty($_GET['player']) || (file_get_contents('https://minecraft.net/haspaid.jsp?user=' . $player) != 'true'))
+
+// Check if the user is premium
+$ch = curl_init(); 
+curl_setopt($ch, CURLOPT_URL, "https://api.mojang.com/users/profiles/minecraft/" . $player); 
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 0); 
+curl_exec($ch); 
+
+if (empty($_GET['player']) || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
     die('Error: Player is not premium');
 
 // Themes
@@ -59,7 +66,7 @@ $check = @file_get_contents('http://skins.minecraft.net/MinecraftSkins/' . $play
 if ($check == '') $playerSkin = 'char';
 
 // Get avatar and merge it with the background
-$avatar = file_get_contents('http://signaturecraft.us/avatars/10/body/' . $playerSkin . '.png');
+$avatar = file_get_contents('https://minotar.net/bust/' . $playerSkin . '/100.png');
 $avatar = imagecreatefromstring($avatar);
 
 imagesetbrush($img, $avatar);
