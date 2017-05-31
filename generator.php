@@ -147,10 +147,9 @@ if ($playerData->playtime == 1) {
 }
 
 // Font Variables
-putenv('GDFONTPATH=' . dirname(__FILE__));
-$font = 'fonts/DroidSans-Bold.ttf';
+$font = 'DroidSans-Bold.ttf';
 $color = imagecolorallocate($img, 250, 250, 250);
-$fontAlt = 'fonts/DroidSans.ttf';
+$fontAlt = 'DroidSans.ttf';
 $colorAlt = imagecolorallocate($img, 10, 10, 10);
 
 // Echo Messages
