@@ -139,6 +139,8 @@ if ($players == 1) {
     $playersLocale = 'players';
 }
 
+$playerData->playtime = $playerData->playtime / 60;
+
 // Handle playtime plural
 if ($playerData->playtime == 1) {
     $playtimeLocale = 'hour';
